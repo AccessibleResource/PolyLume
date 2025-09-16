@@ -17,6 +17,7 @@
   --process-bg: linear-gradient(135deg, #5b24ff 0%, #a18aff 100%);
   --process-btn-correct-bg: #4d94ff;
   --process-btn-rewrite-bg: #ff4d94;
+  --process-btn-voice-bg: #ff6b35;
   --process-shadow: rgba(91, 36, 255, 0.2);
 
   /* Tool 2: Output Colors */
@@ -38,7 +39,7 @@
   padding: 0;
 }
 
-body { 
+body {  
   font-family: var(--font-family);
   background: #f0f2f5;
   color: #333;
@@ -46,43 +47,43 @@ body {
   overflow-x: hidden;
 }
 
-header { 
-  text-align: center; 
-  padding: 50px 20px 40px; 
+header {  
+  text-align: center;  
+  padding: 50px 20px 40px;  
   background: #ffffff;
 }
 
-header h1 { 
-  font-size: 3rem; 
-  font-weight: 700; 
+header h1 {  
+  font-size: 3rem;  
+  font-weight: 700;  
   color: #2c3e50;
   margin-bottom: 10px;
 }
 
-header p { 
-  margin: 5px 0; 
-  font-size: 1.1rem; 
-  color: #555; 
+header p {  
+  margin: 5px 0;  
+  font-size: 1.1rem;  
+  color: #555;  
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.container { 
-  display: flex; 
-  flex-wrap: wrap; 
-  justify-content: center; 
-  gap: 25px; 
-  padding: 25px; 
+.container {  
+  display: flex;  
+  flex-wrap: wrap;  
+  justify-content: center;  
+  gap: 25px;  
+  padding: 25px;  
 }
 
-.panel { 
-  flex: 1; 
-  min-width: 340px; 
-  max-width: 600px; 
+.panel {  
+  flex: 1;  
+  min-width: 340px;  
+  max-width: 600px;  
   background: rgba(255, 255, 255, 0.5);
-  border-radius: var(--border-radius); 
-  padding: 25px; 
+  border-radius: var(--border-radius);  
+  padding: 25px;  
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -110,8 +111,8 @@ header p {
 .panel.process h2 { background: var(--process-bg); box-shadow: 0 4px 15px var(--process-shadow); }
 .panel.process .btn-correct { background-color: var(--process-btn-correct-bg); }
 .panel.process .btn-rewrite { background-color: var(--process-btn-rewrite-bg); }
+.panel.process .btn-voice { background-color: var(--process-btn-voice-bg); }
 .panel.process textarea:focus { box-shadow: inset 0 2px 4px rgba(0,0,0,0.06), 0 0 0 3px var(--process-shadow); }
-
 
 /* --- Theme 2: Output Panel --- */
 .panel.output { border-top: 4px solid #38ef7d; }
@@ -119,24 +120,27 @@ header p {
 .panel.output button { background-color: var(--output-btn-play-bg); color: var(--output-btn-play-text); }
 .panel.output textarea:focus { box-shadow: inset 0 2px 4px rgba(0,0,0,0.06), 0 0 0 3px var(--output-shadow); }
 
-
 /* --- Theme 3: Translate Panel --- */
 .panel.translate { border-top: 4px solid #ffb88c; }
 .panel.translate h2 { background: var(--translate-bg); box-shadow: 0 4px 15px var(--translate-shadow); }
 .panel.translate button { background-color: var(--translate-btn-bg); color: var(--translate-btn-text); }
 .panel.translate select:focus { box-shadow: 0 0 0 3px var(--translate-shadow); }
 
+.input-group {
+  position: relative;
+  margin-bottom: 15px;
+}
 
 textarea, select {
   width: 100%;
   border: 1px solid #dfe6e9;
-  border-radius: 12px; 
-  padding: 15px; 
-  font-size: 1rem; 
-  outline: none; 
+  border-radius: 12px;  
+  padding: 15px;  
+  font-size: 1rem;  
+  outline: none;  
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
   font-family: var(--font-family);
-  transition: box-shadow var(--transition-speed) ease;
+  transition: box-shadow var(--transition-speed) ease, background-color var(--transition-speed) ease;
   background: rgba(255,255,255,0.8);
 }
 
@@ -156,239 +160,632 @@ select {
   background-size: 16px;
 }
 
-.buttons { 
-  display: flex; 
-  flex-wrap: wrap; 
-  gap: 12px; 
-  margin-top: 15px; 
+.voice-input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-button { 
-  flex: 1; 
-  padding: 12px 15px; 
-  font-size: 1rem; 
-  border: none; 
-  border-radius: 12px; 
-  cursor: pointer; 
+.btn-voice {
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
   transition: all var(--transition-speed) ease;
-  font-weight: 600; 
+  font-weight: 600;
   color: #fff;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   min-width: 120px;
 }
 
-button:hover { 
-  transform: translateY(-3px); 
+.btn-voice.listening {
+  animation: pulse 1.5s ease-in-out infinite;
+  background-color: #e74c3c !important;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.buttons {  
+  display: flex;  
+  flex-wrap: wrap;  
+  gap: 12px;  
+  margin-top: 15px;  
+}
+
+button {  
+  flex: 1;  
+  padding: 12px 15px;  
+  font-size: 1rem;  
+  border: none;  
+  border-radius: 12px;  
+  cursor: pointer;  
+  transition: all var(--transition-speed) ease;
+  font-weight: 600;  
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+button:hover:not(:disabled) {  
+  transform: translateY(-3px);  
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
   filter: brightness(1.1);
 }
 
-button:active {
+button:active:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
 
-.status { 
+button:disabled, select:disabled, textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #bdc3c7;
+  transform: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  filter: none;
+}
+
+textarea:disabled {
+  background: #ecf0f1;
+}
+
+.status {  
   margin-top: 15px;
   font-size: 0.9rem;
   color: #555;
-  font-style: italic; 
+  font-style: italic;  
   min-height: 1.2em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.stats { 
+.stats {  
   margin-top: 15px;
   font-size: 0.95rem;
   line-height: 1.8;
-  color: #333; 
+  color: #333;  
   background: #f0f2f5;
   padding: 15px;
   border-radius: 12px;
 }
 
-@media(max-width: 768px){ 
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.alerts {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 350px;
+  z-index: 1000;
+}
+
+.alert {
+  background: #fff;
+  border-left: 4px solid #e74c3c;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  font-size: 0.9rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+.alert.success {
+  border-left-color: #27ae60;
+  background: #d5f4e6;
+  color: #155724;
+}
+
+.alert.error {
+  border-left-color: #e74c3c;
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.alert.info {
+  border-left-color: #3498db;
+  background: #cce7ff;
+  color: #004085;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media(max-width: 768px){  
   header h1 { font-size: 2.2rem; }
   header p { font-size: 1rem; }
-  .container{ flex-direction: column; padding: 15px; gap: 20px; } 
+  .container{ flex-direction: column; padding: 15px; gap: 20px; }  
   .panel { min-width: 100%; }
+  .alerts { 
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
 }
 </style>
 </head>
 <body>
-<header>
+<header role="banner">
   <h1>PolyLume</h1>
   <p>Enhance, correct, and translate your text with AI-assisted tools in any language.</p>
   <p>Developed by Accessible Resource</p>
 </header>
 
-<div class="container">
-  <div class="panel process">
-    <h2>Do you want to process this text?</h2>
-    <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
-    <div class="buttons">
-      <button class="btn-correct" onclick="processText('correct')">In Hands</button>
-      <button class="btn-rewrite" onclick="processText('rewrite')">Rewrite</button>
-    </div>
-    <div class="status" id="status">Ready to process...</div>
-  </div>
+<main>
+    <div class="container">
+      <section class="panel process" aria-labelledby="process-heading">
+        <h2 id="process-heading">Do you want to process this text?</h2>
+        <div class="input-group">
+          <textarea id="inputText" placeholder="Type or paste your text here..." aria-label="Input text to be processed"></textarea>
+          <div class="voice-input-group">
+            <button id="btn-voice" class="btn-voice">🎤 Voice Input</button>
+          </div>
+        </div>
+        <div class="buttons">
+          <button id="btn-correct" class="btn-correct">✨ Correct</button>
+          <button id="btn-rewrite" class="btn-rewrite">🔄 Rewrite</button>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite">
+          <div id="spinner" class="spinner" style="display: none;"></div>
+          <span id="status-text">Ready to process...</span>
+        </div>
+      </section>
 
-  <div class="panel output">
-    <h2>Output</h2>
-    <textarea id="outputText" readonly placeholder="Your processed text will appear here..."></textarea>
-    <div class="buttons">
-      <button onclick="playAudio()">Play Audio</button>
+      <section class="panel output" aria-labelledby="output-heading">
+        <h2 id="output-heading">Output</h2>
+        <textarea id="outputText" readonly placeholder="Your processed text will appear here..." aria-label="Processed output text"></textarea>
+        <div class="buttons">
+          <button id="btn-play">🔊 Play Audio</button>
+        </div>
+        <div id="stats" class="stats" aria-live="polite">
+          Characters: 0<br>
+          Words: 0<br>
+          Paragraphs: 0<br>
+          Special Characters: 0<br>
+          Sentences: 0
+        </div>
+      </section>
     </div>
-    <div class="stats" id="stats">
-      Characters: 0<br>
-      Words: 0<br>
-      Paragraphs: 0<br>
-      Special Characters: 0<br>
-      Sentences: 0
-    </div>
-  </div>
-</div>
 
-<div class="container">
-  <div class="panel translate">
-    <h2>Do you want to translate this text?</h2>
-    <select id="languageSelect">
-      <option value="bn">Bengali</option>
-      <option value="en">English</option>
-      <option value="hi">Hindi</option>
-      <option value="fr">French</option>
-      <option value="es">Spanish</option>
-      <option value="ar">Arabic</option>
-      <option value="ru">Russian</option>
-      <option value="zh">Chinese</option>
-      <option value="ja">Japanese</option>
-      <option value="de">German</option>
-    </select>
-    <div class="buttons">
-      <button onclick="translateText()">Translate</button>
+    <div class="container">
+      <section class="panel translate" aria-labelledby="translate-heading">
+        <h2 id="translate-heading">Do you want to translate this text?</h2>
+        <select id="languageSelect" aria-label="Select language for translation">
+          <option value="bn">Bengali</option>
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="fr">French</option>
+          <option value="es">Spanish</option>
+          <option value="ar">Arabic</option>
+          <option value="ru">Russian</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="de">German</option>
+        </select>
+        <div class="buttons">
+          <button id="btn-translate">🌐 Translate</button>
+        </div>
+      </section>
     </div>
-  </div>
-</div>
+</main>
+
+<div class="alerts" id="alerts" role="alert" aria-live="assertive"></div>
 
 <script>
-// WARNING: It is strongly recommended to use a backend server to store and use the API key
-// to prevent it from being exposed on the client-side.
-const GEMINI_API_KEY = "AIzaSyAxSh3fw8eBCeLNHnfCp2BpdsXc2c8ZJSA"; // Please use your own API key.
 
-function updateStats(text){
-  const stats = {
-    characters:text.length,
-    words:text.trim()?text.trim().split(/\s+/).length:0,
-    paragraphs:text.trim()?text.trim().split(/\n+/).length:0,
-    special:text.replace(/[a-zA-Z0-9\s]/g,"").length,
-    sentences:text.split(/[.!?]+/).filter(Boolean).length
-  };
-  document.getElementById("stats").innerHTML=
-  `Characters: ${stats.characters}<br>
-   Words: ${stats.words}<br>
-   Paragraphs: ${stats.paragraphs}<br>
-   Special Characters: ${stats.special}<br>
-   Sentences: ${stats.sentences}`;
-}
+const GEMINI_API_KEY = "AIzaSyAxSh3fw8eBCeLNHnfCp2BpdsXc2c8ZJSA";
 
-async function callGeminiAPI(prompt){
-  const status = document.getElementById("status");
-  try {
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "X-goog-api-key": GEMINI_API_KEY
-      },
-      body: JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+// --- Audio Management ---
+let activeAudio = null;
+
+// Language code mapping
+const languageCodeMap = {
+  'Bengali': 'bn',
+  'English': 'en',
+  'Hindi': 'hi',
+  'French': 'fr',
+  'Spanish': 'es',
+  'Arabic': 'ar',
+  'Russian': 'ru',
+  'Chinese': 'zh',
+  'Japanese': 'ja',
+  'German': 'de'
+};
+
+// --- Speech Recognition Setup ---
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+
+// --- DOM Element References ---
+const elements = {
+    inputText: document.getElementById('inputText'),
+    outputText: document.getElementById('outputText'),
+    btnCorrect: document.getElementById('btn-correct'),
+    btnRewrite: document.getElementById('btn-rewrite'),
+    btnPlay: document.getElementById('btn-play'),
+    btnTranslate: document.getElementById('btn-translate'),
+    btnVoice: document.getElementById('btn-voice'),
+    languageSelect: document.getElementById('languageSelect'),
+    statusText: document.getElementById('status-text'),
+    spinner: document.getElementById('spinner'),
+    stats: document.getElementById('stats'),
+    alerts: document.getElementById('alerts'),
+};
+
+// --- UI State Management ---
+const allControls = [
+    elements.inputText, elements.btnCorrect, elements.btnRewrite,
+    elements.btnPlay, elements.btnTranslate, elements.languageSelect, elements.btnVoice
+];
+
+function setUIBusyState(isBusy) {
+    elements.spinner.style.display = isBusy ? 'block' : 'none';
+    allControls.forEach(control => {
+        if (control !== elements.btnVoice || !isListening) {
+            control.disabled = isBusy;
+        }
     });
-    
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
+    // After disabling/enabling everything, re-evaluate specific button states
+    if (!isBusy) {
+        updateButtonStates();
     }
-    
-    const data = await response.json();
-    console.log("Gemini Response:", data);
-
-    if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-      return data.candidates[0].content.parts[0].text.trim();
-    }
-    
-    // Handle cases where the API might block the request (e.g., safety settings)
-    if (data.candidates && data.candidates[0] && data.candidates[0].finishReason !== "STOP") {
-        throw new Error(`API call finished with reason: ${data.candidates[0].finishReason}. The response might be blocked.`);
-    }
-
-    throw new Error("Unexpected Gemini API response structure.");
-
-  } catch(err) {
-    console.error("API Call Error:", err);
-    status.textContent = "Error: " + err.message;
-    throw err; // Re-throw error to be caught by the calling function
-  }
 }
 
-async function processText(mode){
-  const input = document.getElementById("inputText").value.trim();
-  const status = document.getElementById("status");
-  if(!input){ alert("Please enter some text first!"); return; }
+function updateButtonStates() {
+    const hasInputText = elements.inputText.value.trim().length > 0;
+    const hasOutputText = elements.outputText.value.trim().length > 0;
 
-  let prompt="";
-  if(mode==="correct"){ 
-    status.textContent="Correcting text…"; 
-    prompt = `Correct the grammar and spelling mistakes in the following text. Provide only the corrected text and nothing else.\n\nText:\n"${input}"`;
-  } else { 
-    status.textContent="Rewriting text…";
-    prompt = `Rewrite the following text to improve its clarity and flow. Provide only the rewritten text as the output, with no additional commentary.\n\nText to rewrite:\n"${input}"`;
+    elements.btnCorrect.disabled = !hasInputText;
+    elements.btnRewrite.disabled = !hasInputText;
+    elements.btnTranslate.disabled = !hasInputText && !hasOutputText;
+    elements.btnPlay.disabled = !hasOutputText;
+    elements.btnVoice.disabled = isListening && !SpeechRecognition;
+}
+
+// --- Alert System ---
+function showAlert(message, type = 'info') {
+    const alert = document.createElement('div');
+    alert.className = `alert ${type}`;
+    alert.textContent = message;
+    
+    elements.alerts.appendChild(alert);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.parentNode.removeChild(alert);
+        }
+    }, 5000);
+}
+
+// --- Core Functions ---
+function updateStats(text) {
+    const statsData = {
+        characters: text.length,
+        words: text.trim() ? text.trim().split(/\s+/).length : 0,
+        paragraphs: text.trim() ? text.trim().split(/\n+/).filter(p => p.trim()).length : 0,
+        special: (text.match(/[^a-zA-Z0-9\s]/g) || []).length,
+        sentences: text.trim() ? (text.match(/[.!?]+(\s|$)/g) || []).length : 0,
+    };
+    elements.stats.innerHTML =
+        `Characters: ${statsData.characters}<br>
+    Words: ${statsData.words}<br>
+    Paragraphs: ${statsData.paragraphs}<br>
+    Special Characters: ${statsData.special}<br>
+    Sentences: ${statsData.sentences}`;
+}
+
+async function callGeminiAPI(prompt) {
+    elements.statusText.textContent = "Communicating with AI...";
+    setUIBusyState(true);
+
+    try {
+        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-goog-api-key": GEMINI_API_KEY
+            },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Gemini Response:", data);
+
+        if (data.candidates && data.candidates[0]?.content?.parts?.[0]) {
+            return data.candidates[0].content.parts[0].text.trim();
+        }
+
+        if (data.candidates && data.candidates[0]?.finishReason !== "STOP") {
+            throw new Error(`API call finished with reason: ${data.candidates[0].finishReason}. The response might be blocked.`);
+        }
+
+        throw new Error("Unexpected Gemini API response structure.");
+
+    } catch (err) {
+        console.error("API Call Error:", err);
+        elements.statusText.textContent = "Error: " + err.message;
+        showAlert("Error: " + err.message, 'error');
+        throw err;
+    } finally {
+        setUIBusyState(false);
+    }
+}
+
+async function processText(mode) {
+    const input = elements.inputText.value.trim();
+    if (!input) { 
+        showAlert("Please enter some text first!", 'error'); 
+        return; 
+    }
+
+    let prompt = "";
+    if (mode === "correct") {
+        elements.statusText.textContent = "Correcting text…";
+        prompt = `Correct the grammar and spelling mistakes in the following text. Provide only the corrected text and nothing else.\n\nText:\n"${input}"`;
+    } else {
+        elements.statusText.textContent = "Rewriting text…";
+        prompt = `Rewrite the following text to improve its clarity and flow. Provide only the rewritten text as the output, with no additional commentary.\n\nText to rewrite:\n"${input}"`;
+    }
+
+    try {
+        const result = await callGeminiAPI(prompt);
+        elements.outputText.value = result;
+        updateStats(result);
+        elements.statusText.textContent = "Completed successfully!";
+        showAlert("Text processed successfully!", 'success');
+    } catch (err) {
+        elements.outputText.value = "";
+        updateStats("");
+    }
+}
+
+async function translateText() {
+    const text = elements.outputText.value.trim() || elements.inputText.value.trim();
+    const lang = elements.languageSelect.value;
+    const langName = elements.languageSelect.options[elements.languageSelect.selectedIndex].text;
+
+    if (!text) { 
+        showAlert("No text available to translate!", 'error'); 
+        return; 
+    }
+
+    elements.statusText.textContent = `Translating to ${langName}…`;
+    const prompt = `Translate the following text into ${langName}. Your response must contain only the translated text, without any additional phrases or explanations.\n\nText to translate:\n"${text}"`;
+
+    try {
+        const result = await callGeminiAPI(prompt);
+        elements.outputText.value = result;
+        updateStats(result);
+        elements.statusText.textContent = "Translation complete!";
+        showAlert(`Translation to ${langName} completed!`, 'success');
+    } catch (err) {
+        elements.outputText.value = "";
+        updateStats("");
+    }
+}
+
+// --- Voice Input Functions ---
+function initSpeechRecognition() {
+    if (!SpeechRecognition) {
+        showAlert("Speech recognition is not supported in this browser.", 'error');
+        elements.btnVoice.disabled = true;
+        return false;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+        isListening = true;
+        elements.btnVoice.classList.add('listening');
+        elements.btnVoice.textContent = '🛑 Stop Listening';
+        elements.statusText.textContent = 'Listening... Speak now.';
+        showAlert('Voice recognition started. Speak now!', 'info');
+        updateButtonStates();
+    };
+
+    recognition.onresult = (event) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        if (finalTranscript) {
+            elements.inputText.value += finalTranscript;
+            updateButtonStates();
+        }
+
+        // Show interim results in status
+        if (interimTranscript) {
+            elements.statusText.textContent = `Listening: "${interimTranscript}"`;
+        }
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        showAlert(`Speech recognition error: ${event.error}`, 'error');
+        stopListening();
+    };
+
+    recognition.onend = () => {
+        if (isListening) {
+            // Restart if still supposed to be listening
+            recognition.start();
+        }
+    };
+
+    return true;
+}
+
+function startListening() {
+    if (!recognition && !initSpeechRecognition()) {
+        return;
+    }
+
+    try {
+        recognition.start();
+    } catch (error) {
+        console.error('Error starting speech recognition:', error);
+        showAlert('Could not start voice recognition.', 'error');
+    }
+}
+
+function stopListening() {
+    if (recognition && isListening) {
+        isListening = false;
+        recognition.stop();
+        elements.btnVoice.classList.remove('listening');
+        elements.btnVoice.textContent = '🎤 Voice Input';
+        elements.statusText.textContent = 'Voice input stopped.';
+        updateButtonStates();
+        showAlert('Voice recognition stopped.', 'info');
+    }
+}
+
+function toggleVoiceInput() {
+    if (!isListening) {
+        startListening();
+    } else {
+        stopListening();
+    }
+}
+
+// --- Updated Audio Playback Functions ---
+// Play Response Audio
+async function playResponse(elementId, buttonId) {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+
+  if (activeAudio && activeAudio.dataset.buttonId === buttonId && !activeAudio.paused) {
+    activeAudio.pause();
+    button.innerHTML = '🔊 Play Audio';
+    button.setAttribute('aria-label', 'Play response audio');
+    activeAudio = null;
+    button.disabled = false;
+    return;
   }
+
+  button.innerHTML = 'Loading...';
+  button.setAttribute('aria-label', 'Loading response audio');
+  button.disabled = true;
 
   try {
-    const result = await callGeminiAPI(prompt);
-    document.getElementById("outputText").value = result;
-    updateStats(result);
-    status.textContent="Completed successfully!";
-  } catch(err) { 
-    status.textContent="Error: " + err.message; 
-    // Clear output on error
-    document.getElementById("outputText").value = "";
-    updateStats("");
+    const element = document.getElementById(elementId);
+    const text = element.value || element.textContent;
+    const langCode = languageCodeMap['English'] || 'en'; // Default to English
+    const encodedText = encodeURIComponent(text);
+    const response = await fetch(`https://www.techassistantforblind.com/modules/gtts.php?text=${encodedText}&lang=${langCode}`, {
+      method: 'GET',
+      headers: { 'Referer': 'https://translate.google.com' }
+    });
+    if (!response.ok) throw new Error('Network error');
+    const audioData = await response.text(); // data:audio/mpeg;base64,...
+
+    const audio = new Audio(audioData);
+    audio.dataset.buttonId = buttonId;
+    activeAudio = audio;
+
+    audio.addEventListener('ended', () => {
+      button.innerHTML = '🔊 Replay';
+      button.setAttribute('aria-label', 'Play response audio');
+      activeAudio = null;
+      button.disabled = false;
+    });
+
+    audio.play();
+    button.innerHTML = '⏸️ Pause';
+    button.setAttribute('aria-label', 'Pause response audio');
+    button.disabled = false;
+  } catch (err) {
+    // Silent failure for audio errors
+    button.innerHTML = '🔊 Retry';
+    button.setAttribute('aria-label', 'Play response audio');
+    button.disabled = false;
   }
 }
 
-async function translateText(){
-  // Use output text if available, otherwise use input text for translation
-  const text = document.getElementById("outputText").value.trim() || document.getElementById("inputText").value.trim();
-  const langSelect = document.getElementById("languageSelect");
-  const lang = langSelect.value;
-  const langName = langSelect.options[langSelect.selectedIndex].text;
-  const status = document.getElementById("status");
-  
-  if(!text){ alert("No text available to translate!"); return; }
-
-  status.textContent=`Translating to ${langName}…`;
-  const prompt = `Translate the following text into ${langName}. Your response must contain only the translated text, without any additional phrases or explanations.\n\nText to translate:\n"${text}"`;
-
-  try {
-    const result = await callGeminiAPI(prompt);
-    document.getElementById("outputText").value = result;
-    updateStats(result);
-    status.textContent="Translation complete!";
-  } catch(err) { 
-    status.textContent="Error: " + err.message; 
-    // Clear output on error
-    document.getElementById("outputText").value = "";
-    updateStats("");
-  }
+async function playAudio() {
+    await playResponse('outputText', 'btn-play');
 }
 
-function playAudio(){
-  const text = document.getElementById("outputText").value;
-  if(!text){ alert("No text to read aloud!"); return; }
-  // Cancel any ongoing speech before starting a new one
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  speechSynthesis.speak(utterance);
-}
+// --- Event Listeners ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Button event listeners
+    elements.btnCorrect.addEventListener('click', () => processText('correct'));
+    elements.btnRewrite.addEventListener('click', () => processText('rewrite'));
+    elements.btnTranslate.addEventListener('click', translateText);
+    elements.btnPlay.addEventListener('click', playAudio);
+    elements.btnVoice.addEventListener('click', toggleVoiceInput);
+
+    // Text input event listeners
+    elements.inputText.addEventListener('input', updateButtonStates);
+    elements.outputText.addEventListener('input', updateButtonStates);
+
+    // Initialize speech recognition
+    initSpeechRecognition();
+
+    // Initial state setup
+    updateButtonStates();
+    
+    // Welcome message
+    showAlert('PolyLume is ready! Start by entering some text or using voice input.', 'success');
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+    if (activeAudio) {
+        activeAudio.pause();
+        activeAudio = null;
+    }
+    if (recognition && isListening) {
+        recognition.stop();
+    }
+});
+
 </script>
 </body>
 </html>
